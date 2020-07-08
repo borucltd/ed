@@ -1,9 +1,11 @@
 import axios from "axios";
-const BASEURL = "https://www.omdbapi.com/?t=";
-const APIKEY = "&apikey=trilogy";
+const BASEURL = "https://randomuser.me/api/";
+const APIRESULTS = "?results=20";
+
 
 export default {
   search: function(query) {
-    return axios.get(BASEURL + query + APIKEY);
+    // https://randomuser.me/api/?results=20
+    return axios.get(BASEURL + APIRESULTS);
   }
 };

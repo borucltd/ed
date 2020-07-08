@@ -1,17 +1,9 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import Dictionary from "./components/Dictionary";
+
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Employee Dictionary
-        </p>
-      </header>
-    </div>
-  );
+  return <Dictionary/>;
 }
 
 export default App;
