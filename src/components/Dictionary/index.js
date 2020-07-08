@@ -1,39 +1,37 @@
 import React, { Component } from "react";
 import Container from "../Container";
-//import Row from "../Row";
-//import Col from "../Col";
+import Row from "../Row";
+import Header from "../Header";
 import Worker from "../Worker";
 import Table from 'react-bootstrap/Table';
 import API from "../../utils/API";
 import "./style.css";
 
+
 class Dictionary extends Component {
 
   // Setting the component's initial state
   state = {
-    result: [],
-    sort: "",
-    filter: ""
+    result: []
   };
 
-  // when component is mounted (once only) - in-built method
+  // when component is mounted (once only)
   componentDidMount() {
      this.searchPeople();
   }
 
   // custom method which runs API
   searchPeople = query => {
-    
      API.search(query)
         .then(res => {console.log(res.data); this.setState({ result: res.data.results})})
         .catch(err => console.log(err));
   };
 
-  // sort Records
+  // sort records
   sortRecords = (column) => {
+
     console.log("Sorting..." + column)
     // here the sorting will be different for different columns
-
     switch(column) {
       case "age":
         this.setState({
@@ -89,41 +87,56 @@ class Dictionary extends Component {
       default:
         break;
     }
-    
-    console.log(this.state.result);
-
-
-
-
   }
 
-   // filter Records
-   filterRecords = query => {
-   
-  }
+   // filter records
+  //  filterRecords = (value) => {
+  //     console.log("Filtering..." + value)
+  //     this.setState({
+  //     [result]: this.state.result.filter(function(record){
+  //       return record.name.first == value;
+  //     })
+  //   })   
+  // }
   
-
-  // sort
+  // sort handler
   handleSort = event => {
     event.preventDefault();
     this.sortRecords(event.target.name);
-
   }
 
-  // filter
-  handleFilter = event => {
+  // filter handler
+  handleInputChange = event => {
+    
     event.preventDefault();
-    this.filterRecords(this.state.filter);
-  }
-
-  wyswietl = () => {
-    console.log("HOVER");
+    // getting the value which triggered the change
+    const value  = event.target.value;
+    console.log("Filtering..." + value)
+    // filter per first name
+    const filtered =  this.state.result.filter(function(record){
+      return record.name.first == value;
+    })
+    console.log(filtered.length);
+    if (filtered.length !== 0) {
+      this.setState({
+        result: this.state.result.filter(function(record){
+          return record.name.first == value;
+        })
+      })
+    }
+    
+        
   }
 
   render() {
     return (
-        <Container>               
+        <Container>   
+          <Row>   
+             
                   <h1>Employee directory</h1>
+                  <Header handleInputChange={this.handleInputChange}  
+                  />
+
                   <Table striped bordered hover variant="dark">
                       <thead>
                           <tr>
@@ -141,7 +154,8 @@ class Dictionary extends Component {
                           ))}
                       </tbody>    
                   </Table>
-              
+                  
+                  </Row>   
         </Container>
     )
   }
