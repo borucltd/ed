@@ -12,7 +12,8 @@ class Dictionary extends Component {
 
   // Setting the component's initial state
   state = {
-    result: []
+    result: [],
+    initial: []
   };
 
   // when component is mounted (once only)
@@ -23,7 +24,10 @@ class Dictionary extends Component {
   // custom method which runs API
   searchPeople = query => {
      API.search(query)
-        .then(res => {console.log(res.data); this.setState({ result: res.data.results})})
+        .then(res => {console.log(res.data); this.setState({ 
+          result: res.data.results,
+          initial: res.data.results
+        })})
         .catch(err => console.log(err));
   };
 
@@ -89,15 +93,6 @@ class Dictionary extends Component {
     }
   }
 
-   // filter records
-  //  filterRecords = (value) => {
-  //     console.log("Filtering..." + value)
-  //     this.setState({
-  //     [result]: this.state.result.filter(function(record){
-  //       return record.name.first == value;
-  //     })
-  //   })   
-  // }
   
   // sort handler
   handleSort = event => {
@@ -107,25 +102,26 @@ class Dictionary extends Component {
 
   // filter handler
   handleInputChange = event => {
+    console.log(this.state.initial)
     
     event.preventDefault();
     // getting the value which triggered the change
-    const value  = event.target.value;
-    console.log("Filtering..." + value)
+    const reg  = `^${event.target.value}.*`;
+    console.log("Filtering..." + reg)
     // filter per first name
-    const filtered =  this.state.result.filter(function(record){
-      return record.name.first == value;
+    const filtered =  this.state.initial.filter(function(record){
+      return record.name.first.match(reg);
     })
     console.log(filtered.length);
     if (filtered.length !== 0) {
       this.setState({
-        result: this.state.result.filter(function(record){
-          return record.name.first == value;
-        })
+        result: filtered
       })
-    }
-    
-        
+    } else {
+      this.setState({
+        result: this.state.initial
+      })
+    }       
   }
 
   render() {
