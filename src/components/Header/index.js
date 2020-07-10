@@ -1,10 +1,12 @@
 import React from "react";
 
 function Header(props) {
-  return (
+  return ( 
+    <div class="jumbotron">
+    <h1 className="text-dark" style={{fontSize: '6rem'}}>Employee directory</h1>
     <form>
       <div className="form-group">
-        <label htmlFor="Filter">Filter: </label>
+        <label htmlFor="Filter">Search the first name: </label>
         <input
           onChange={props.handleInputChange}
           name="search"
@@ -15,6 +17,7 @@ function Header(props) {
         />
       </div>
     </form>
+    </div>
   );
 }
 

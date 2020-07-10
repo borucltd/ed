@@ -2,8 +2,6 @@ import React from "react";
 import "./style.css";
 
 function Worker(props) {
-
-  console.log("HEEERE" + props)
   return (
         <tr>
             <td><img src={props.workerData.picture.thumbnail} alt="face"></img></td>

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Container from "../Container";
 import Row from "../Row";
+import Col from "../Col";
 import Header from "../Header";
 import Worker from "../Worker";
 import Table from 'react-bootstrap/Table';
@@ -31,69 +32,74 @@ class Dictionary extends Component {
         .catch(err => console.log(err));
   };
 
-  // sort records
-  sortRecords = (column) => {
+  // compare function
+  compare = (a,b,parameter) => {
+    if (parameter) {
+      const properties = parameter.split(".");  
+      switch (properties.length) {
+        case 1:
+          a = a[properties[0]];
+          b = b[properties[0]];
+          break;
+        case 2:
+          a = a[properties[0]][properties[1]];
+          b = b[properties[0]][properties[1]];
+          break;
+        case 3:
+          a = a[properties[0]][properties[1]][properties[2]];
+          b = b[properties[0]][properties[1]][properties[2]];
+          break;
+        default:
+          a = a[properties[0]];
+          b = b[properties[0]];
+          break;
+      }
 
+      if (a < b ) {
+        return -1;
+      } else if ( b < a ){
+        return 1;
+      } else {
+        return 0;
+      }
+    } else {
+      console.log(a)
+      return a - b;
+    } 
+
+    
+  }
+
+  sortRecords = (column) => {
     console.log("Sorting..." + column)
     // here the sorting will be different for different columns
     switch(column) {
       case "age":
-        this.setState({
-          result: this.state.result.sort(function(a, b){return a.dob.age - b.dob.age})
-        })
+        this.setState({result: this.state.result.sort((x,y) => {return this.compare(x,y,"dob.age")})})  
         break;
 
       case "first":
-        this.setState({
-          result: this.state.result.sort(function(a, b){
-            let x = a.name.first.toLowerCase();
-            let y = b.name.first.toLowerCase();
-            if (x < y) {return -1;}
-            if (x > y) {return 1;}
-            return 0;
-          })});
-        
+        this.setState({result: this.state.result.sort((x,y) => {return this.compare(x,y,"name.first")})})       
         break;
 
       case "last":
-        this.setState({
-          result: this.state.result.sort(function(a, b){
-            let x = a.name.last.toLowerCase();
-            let y = b.name.last.toLowerCase();
-            if (x < y) {return -1;}
-            if (x > y) {return 1;}
-            return 0;           
-          })});
+        this.setState({result: this.state.result.sort((x,y) => {return this.compare(x,y,"name.last")})})   
         break;
 
       case "mobile":
-        this.setState({
-          result: this.state.result.sort(function(a, b){
-            let x = a.phone.split("");
-            let y = b.phone.split("");
-            if (x.length < y.length) {return -1;}
-            if (x.length > y.length) {return 1;}
-            return 0;
-            })});
+        this.setState({result: this.state.result.sort((x,y) => {return this.compare(x,y,"phone")})})   
         break;
 
       case "country":
-        this.setState({
-          result: this.state.result.sort(function(a, b){
-            let x = a.location.country.toLowerCase();
-            let y = b.location.country.toLowerCase();
-            if (x < y) {return -1;}
-            if (x > y) {return 1;}
-            return 0;
-          })});
+        this.setState({result: this.state.result.sort((x,y) => {return this.compare(x,y,"location.country")})}) 
         break;
 
       default:
+        console.log("Noting.");
         break;
     }
   }
 
-  
   // sort handler
   handleSort = event => {
     event.preventDefault();
@@ -127,11 +133,9 @@ class Dictionary extends Component {
   render() {
     return (
         <Container>   
-          <Row>   
-             
-                  <h1>Employee directory</h1>
-                  <Header handleInputChange={this.handleInputChange}  
-                  />
+          <Row fluid> 
+            <Col>
+                  <Header handleInputChange={this.handleInputChange}/>
 
                   <Table striped bordered hover variant="dark">
                       <thead>
@@ -150,8 +154,8 @@ class Dictionary extends Component {
                           ))}
                       </tbody>    
                   </Table>
-                  
-                  </Row>   
+              </Col> 
+            </Row>   
         </Container>
     )
   }
